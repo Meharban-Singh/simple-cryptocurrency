@@ -1,6 +1,7 @@
 import sha256 from "crypto-js/sha256";
 
 export default class Transaction {
+  private timestamp: number = -1;
   /**
    * Creates a new Transation
    *
@@ -12,8 +13,7 @@ export default class Transaction {
   constructor(
     public fromAddress: string,
     public toAddress: string,
-    public amount: number,
-    public timestamp: number
+    public amount: number
   ) {
     this.timestamp = Date.now();
   }

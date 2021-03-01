@@ -4,7 +4,7 @@ import sha256 from "crypto-js/sha256";
 
 export default class Block {
   private nonce: number = 0; // some random number to change hash to increase mining difficulty and hence security
-  public hash: hash = "";
+  private hash: hash = "";
 
   /**
    * Creates a new Block
@@ -14,9 +14,9 @@ export default class Block {
    * @param {hash} previousHash
    */
   constructor(
-    public transaction: Transaction,
-    public timestamp: number,
-    public previousHash: hash
+    private transaction: Transaction,
+    private timestamp: number,
+    private previousHash: hash
   ) {
     this.previousHash = previousHash;
     this.timestamp = timestamp;
@@ -54,5 +54,18 @@ export default class Block {
     }
 
     console.debug(`Block mined: ${this.hash}`);
+  }
+
+  /**
+   * Returns true if the block is valid
+   *
+   * @return {boolean}
+   */
+  isValid() {
+    if (this.transaction === null) return false;
+
+    if (this.calculateHash() !== this.hash) return false;
+
+    return this.transaction.isValid();
   }
 }

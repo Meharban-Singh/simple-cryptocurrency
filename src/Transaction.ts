@@ -3,20 +3,19 @@ import { hash } from "./types";
 import { Wallet } from "./Wallet";
 
 export default class Transaction {
-  private timestamp: number = -1;
-  private signature: any = null;
+  public timestamp: number = -1;
+  public signature: any = null;
   /**
    * Creates a new Transation
    *
    * @param {hash} fromAddress
    * @param {hash} toAddress
-   * @param {number} amount
    * @param {number} timestamp
    */
   constructor(
-    private fromAddress: hash,
-    private toAddress: hash,
-    private amount: number
+    public fromAddress: hash,
+    public toAddress: hash,
+    public amount: number
   ) {
     this.timestamp = Date.now();
   }
@@ -40,7 +39,7 @@ export default class Transaction {
    *
    * @param {Wallet} wallet
    */
-  signTransaction(wallet: Wallet) {
+  sign(wallet: Wallet) {
     // Check to make sure you can only sign your transactions
     if (wallet.publicKey !== this.fromAddress)
       throw new Error("You cannot sign transactions for other wallets!");
@@ -59,6 +58,15 @@ export default class Transaction {
    * @returns {boolean}
    */
   isValid(): boolean {
+    if (!this.fromAddress || !this.toAddress) {
+      console.error("Transaction must include from and to address");
+      return false;
+    }
+
+    if (this.amount <= 0) {
+      console.error("Tsx invalid amount");
+      return false;
+    }
     // Transaction not signed
     if (
       !this.signature ||
